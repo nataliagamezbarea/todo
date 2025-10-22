@@ -19,7 +19,7 @@ public class Productor extends Thread {
                     pizza++;
 					Main.bandeja.notifyAll();
 				}
-				Thread.sleep(3000);
+                Thread.sleep(1500); // tiempo de preparación
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

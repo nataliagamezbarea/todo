@@ -21,14 +21,14 @@ public class Consumidor extends Thread {
 
                     // Toma una pizza de la bandeja
                     int id = Main.bandeja.poll();
-                    System.out.println("🍕 Repartidor " + nombre + " entrega la pizza " + id);
+                    System.out.println("Repartidor " + nombre + " entrega la pizza " + id);
 
                     // Notifica a los productores que hay espacio libre
                     Main.bandeja.notifyAll();
                 }
 
                 // Simula el tiempo de entrega
-                Thread.sleep(2000);
+                Thread.sleep(2500); // tiempo de entrega
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

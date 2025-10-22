@@ -1,48 +1,48 @@
 package Actividad3_Servicio;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ServicioDescargas extends Thread {
-    private boolean activo = true;
-    private static int descargasActivas;
-    private int descargasSimultaneas = 3;
-    ArrayList <Integer> descargasPendientes;
-    // tiene que haber unas descargas simultaneas
-    // totales
-    // ahora
-    // inicializar el contructor con las descargas
+public class ServicioDescargas {
 
-    // while true
+    private final int MAX_DESCARGAS_SIMULTANEAS = 3;
+    public boolean activo = true;
 
-    // sincronizar
+    private final List<Integer> descargasPendientes = new ArrayList<>();
+    private int descargasActivas = 0;
 
-    public ServicioDescargas (int numeroDescargas) {
-        descargasPendientes = new ArrayList<>();
-        for (int i = 0; i < numeroDescargas; i++) {
+
+    public ServicioDescargas(int numeroSolicitudes) {
+        for (int i = 1; i <= numeroSolicitudes; i++) {
             descargasPendientes.add(i);
         }
     }
 
-    public void run() {
+    public void iniciar() throws InterruptedException {
+        System.out.println("Servicio iniciado");
+
         while (activo) {
             synchronized (this) {
-                while (descargasActivas <  descargasSimultaneas && !descargasPendientes.isEmpty()) {
-                    int id = descargasPendientes.remove(0);
-                    new DescargaArchivo(id , this).start();
+                // Reproduce Mientras descargas activas sean menor que las permitidas y descargas pendientes
+                while (descargasActivas < MAX_DESCARGAS_SIMULTANEAS && !descargasPendientes.isEmpty()) {
+                    int id = descargasPendientes.removeFirst(); // toma y elimina la primera descarga pendiente
+                    new DescargaArchivo(id, this).start();
                     descargasActivas++;
                 }
+
+                // Si no quedan descargas pendientes y no hay activas, termina
+                if (descargasPendientes.isEmpty() && descargasActivas == 0) {
+                    activo = false;
+                }
             }
-            if (descargasPendientes.isEmpty() && descargasActivas == 0) {
-                activo = false;
-            }
+            Thread.sleep(2000); // pequeño delay antes de intentar lanzar más
         }
 
-
+        System.out.println("Servicio terminado");
     }
 
-    public static synchronized  void descargaCompletada() {
+    // Llamado por cada hilo al terminar
+    public synchronized void descargaCompletada() {
         descargasActivas--;
     }
-
-
 }

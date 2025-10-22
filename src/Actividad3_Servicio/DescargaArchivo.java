@@ -1,26 +1,27 @@
 package Actividad3_Servicio;
 
-public class DescargaArchivo extends Thread  {
+public class DescargaArchivo extends Thread {
     private final int id;
     private final ServicioDescargas servicio;
-    public DescargaArchivo (int id , ServicioDescargas servicio){
+
+    public DescargaArchivo(int id, ServicioDescargas servicio) {
         this.id = id;
         this.servicio = servicio;
     }
 
+    @Override
     public void run() {
-        System.out.println("La descarga ha empezado");
+        System.out.println("Descarga " + id + " empezada en el servicio");
+
         try {
-            Thread.sleep(2000);
+            Thread.sleep(2000); // simula tiempo de descarga
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        System.out.println("La descarga ha terminado");
-        ServicioDescargas.descargaCompletada();
 
+        System.out.println("Descarga " + id + " terminada en el servicio");
 
+        // avisamos al servicio que esta descarga terminó
+        servicio.descargaCompletada();
     }
-
-
-
 }
